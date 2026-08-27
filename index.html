@@ -6,100 +6,776 @@
 
   <title>Michael Ehab | Video Editor</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --cyan: #00d9f5;
+      --blue: #2792ff;
+      --purple: #8b5cf6;
+      --white: #ffffff;
+      --gray: #a6a6a6;
+      --dark: #050607;
+      --card: rgba(255,255,255,0.045);
+      --border: rgba(255,255,255,0.13);
+    }
+
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background: #0b0b0b;
       color: white;
-      line-height: 1.7;
+      background: #050607;
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+      transition: background 1.2s ease;
     }
 
-    header {
-      min-height: 100vh;
+    body.about-background {
+      background: #07090d;
+    }
+
+    body.services-background {
+      background: #0b0614;
+    }
+
+    body.work-background {
+      background: #031014;
+    }
+
+    body.contact-background {
+      background: #0d0804;
+    }
+
+    .background-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .background-glow::before,
+    .background-glow::after {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      filter: blur(130px);
+      opacity: 0.18;
+      animation: glowMove 10s ease-in-out infinite alternate;
+    }
+
+    .background-glow::before {
+      top: -120px;
+      left: -100px;
+      background: var(--cyan);
+    }
+
+    .background-glow::after {
+      right: -120px;
+      bottom: -100px;
+      background: var(--purple);
+      animation-delay: -4s;
+    }
+
+    .grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.15;
+
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+
+      background-size: 45px 45px;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 92px;
+
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px;
-      background: linear-gradient(135deg, #080808, #1d1d1d);
+      justify-content: space-between;
+
+      padding: 0 7%;
+      background: rgba(4,5,6,0.82);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 1000;
     }
 
-    header h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
+    .brand {
+      color: white;
+      font-size: clamp(23px, 5vw, 34px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      text-decoration: none;
     }
 
-    header h2 {
-      color: #00e5ff;
-      margin-bottom: 20px;
+    .brand span {
+      color: var(--cyan);
     }
 
-    header p {
-      color: #cfcfcf;
-      max-width: 600px;
-      margin: auto;
+    .menu {
+      display: flex;
+      gap: 28px;
+    }
+
+    .menu a {
+      color: #d5d5d5;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .menu a:hover {
+      color: var(--cyan);
+    }
+
+    .menu-button {
+      display: none;
+      border: 0;
+      color: white;
+      background: transparent;
+      font-size: 35px;
+      cursor: pointer;
     }
 
     section {
-      max-width: 900px;
+      width: min(90%, 1120px);
+      min-height: 100vh;
       margin: auto;
-      padding: 70px 25px;
+      padding: 135px 0 80px;
     }
 
-    section h2 {
-      color: #00e5ff;
-      font-size: 32px;
-      margin-bottom: 20px;
+    .hero {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: center;
+      gap: 80px;
     }
 
-    section p {
-      color: #d4d4d4;
+    .profile-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .profile-ring {
+      position: relative;
+      width: min(90vw, 450px);
+      aspect-ratio: 1;
+      padding: 6px;
+      border-radius: 50%;
+
+      background: conic-gradient(
+        var(--cyan),
+        var(--blue),
+        var(--purple),
+        var(--cyan)
+      );
+
+      box-shadow:
+        0 0 35px rgba(0,217,245,0.4),
+        0 0 90px rgba(39,146,255,0.2);
+
+      animation:
+        profileFloat 4s ease-in-out infinite,
+        ringGlow 3s ease-in-out infinite alternate;
+    }
+
+    .profile-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      border: 8px solid #050607;
+      border-radius: 50%;
+    }
+
+    .floating-icon {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(10,10,12,0.8);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    .floating-icon.capcut {
+      top: 10%;
+      right: -10px;
+    }
+
+    .floating-icon.premiere {
+      bottom: 8%;
+      left: -10px;
+      animation-delay: -1.5s;
+    }
+
+    .hero-text {
+      text-align: left;
+    }
+
+    .hello {
+      color: var(--gray);
+      font-size: clamp(24px, 5vw, 42px);
+      font-weight: 400;
+    }
+
+    .hero h1 {
+      margin-top: 10px;
+      font-size: clamp(55px, 10vw, 100px);
+      line-height: 0.95;
+      letter-spacing: -6px;
+    }
+
+    .job-title {
+      margin-top: 22px;
+      font-size: clamp(27px, 5vw, 47px);
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .job-title span {
+      color: transparent;
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--purple));
+      background-size: 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      animation: textGradient 4s linear infinite;
+    }
+
+    .description {
+      max-width: 650px;
+      margin-top: 26px;
+      color: var(--gray);
       font-size: 18px;
+      line-height: 1.8;
     }
 
     .buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 30px;
+      gap: 16px;
+      margin-top: 35px;
     }
 
     .button {
-      display: inline-block;
-      padding: 13px 25px;
-      color: #000;
-      background: #00e5ff;
+      position: relative;
+      overflow: hidden;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-width: 180px;
+      padding: 17px 28px;
+      border: 2px solid var(--blue);
+      border-radius: 50px;
+
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      box-shadow: 0 10px 40px rgba(39,146,255,0.25);
+
+      font-size: 16px;
+      font-weight: 800;
       text-decoration: none;
-      border-radius: 30px;
-      font-weight: bold;
-      transition: 0.3s;
+      transition: 0.35s;
+    }
+
+    .button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -110%;
+      width: 70%;
+      height: 100%;
+      transform: skewX(-25deg);
+      background: rgba(255,255,255,0.45);
+      transition: 0.65s;
+    }
+
+    .button:hover::before {
+      left: 140%;
     }
 
     .button:hover {
-      background: white;
-      transform: translateY(-3px);
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 18px 50px rgba(0,217,245,0.35);
+    }
+
+    .button.outline {
+      color: white;
+      background: transparent;
+      border-color: white;
+      box-shadow: none;
+    }
+
+    .scroll-down {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+      color: #888;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      font-size: 26px;
+      color: var(--cyan);
+      animation: arrowBounce 1.5s infinite;
+    }
+
+    .section-label {
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin-top: 14px;
+      font-size: clamp(50px, 9vw, 90px);
+      line-height: 1;
+      letter-spacing: -5px;
+    }
+
+    .section-title span {
+      color: var(--cyan);
+    }
+
+    .about-text {
+      max-width: 860px;
+      margin-top: 55px;
+      color: #a7a7a7;
+      font-size: clamp(20px, 4vw, 30px);
+      line-height: 1.8;
+    }
+
+    .about-text strong {
+      color: white;
+    }
+
+    .objective {
+      max-width: 780px;
+      margin-top: 50px;
+      padding: 35px;
+
+      border: 1px solid var(--border);
+      border-left: 7px solid var(--cyan);
+      border-radius: 0 25px 25px 0;
+
+      background: rgba(255,255,255,0.035);
+      backdrop-filter: blur(12px);
+      transition: 0.4s;
+    }
+
+    .objective:hover {
+      transform: translateX(10px);
+      background: rgba(0,217,245,0.07);
+    }
+
+    .objective h3 {
+      color: var(--cyan);
+      font-size: 26px;
+    }
+
+    .objective p {
+      margin-top: 15px;
+      color: var(--gray);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-top: 55px;
+    }
+
+    .service-card {
+      padding: 45px 30px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      transition: 0.45s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-12px);
+      border-color: var(--cyan);
+      box-shadow: 0 25px 70px rgba(0,217,245,0.12);
+    }
+
+    .service-icon {
+      font-size: 45px;
+    }
+
+    .service-card h3 {
+      margin-top: 25px;
+      font-size: 28px;
+    }
+
+    .service-card ul {
+      margin-top: 25px;
+      list-style: none;
+    }
+
+    .service-card li {
+      padding: 15px 0;
+      color: var(--gray);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .tools-window {
+      position: relative;
+      overflow: hidden;
+      margin-top: 60px;
+      padding: 25px 0;
+    }
+
+    .tools-track {
+      display: flex;
+      width: max-content;
+      gap: 22px;
+      animation: toolsMove 14s linear infinite;
+    }
+
+    .tool {
+      min-width: 250px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.055);
+    }
+
+    .tool img {
+      width: 60px;
+      height: 60px;
+      padding: 11px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .tool h3 {
+      font-size: 18px;
+    }
+
+    .tool p {
+      margin-top: 5px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-top: 60px;
+    }
+
+    .project {
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: #111;
+    }
+
+    .project img {
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      object-fit: cover;
+      transition: 0.7s;
+    }
+
+    .project:hover img {
+      transform: scale(1.08);
+    }
+
+    .project-content {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+
+      padding: 35px;
+      background: linear-gradient(transparent 35%, rgba(0,0,0,0.95));
+    }
+
+    .project-content span {
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .project-content h3 {
+      margin-top: 10px;
+      font-size: 30px;
+    }
+
+    .project-content p {
+      margin-top: 8px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .contact-card {
+      padding: 80px 35px;
+      border: 1px solid var(--border);
+      border-radius: 35px;
+      text-align: center;
+
+      background:
+        radial-gradient(circle at top, rgba(0,217,245,0.18), transparent 45%),
+        rgba(255,255,255,0.035);
+    }
+
+    .contact-card h2 {
+      font-size: clamp(45px, 9vw, 85px);
+      letter-spacing: -5px;
+    }
+
+    .contact-card h2 span {
+      color: var(--cyan);
+    }
+
+    .contact-card p {
+      max-width: 650px;
+      margin: 22px auto 0;
+      color: var(--gray);
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .contact-card .buttons {
+      justify-content: center;
     }
 
     footer {
+      padding: 35px 20px;
+      border-top: 1px solid var(--border);
+      color: #777;
       text-align: center;
-      padding: 25px;
-      color: #888;
-      border-top: 1px solid #292929;
     }
 
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 36px;
+    .reveal {
+      opacity: 0;
+      transform: translateY(70px);
+      transition:
+        opacity 0.9s ease,
+        transform 0.9s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes profileFloat {
+      0%, 100% {
+        transform: translateY(0);
       }
 
-      header h2 {
-        font-size: 22px;
+      50% {
+        transform: translateY(-18px);
+      }
+    }
+
+    @keyframes ringGlow {
+      from {
+        box-shadow: 0 0 25px rgba(0,217,245,0.35);
+      }
+
+      to {
+        box-shadow:
+          0 0 60px rgba(0,217,245,0.55),
+          0 0 100px rgba(139,92,246,0.25);
+      }
+    }
+
+    @keyframes iconFloat {
+      0%, 100% {
+        transform: translateY(0) rotate(-4deg);
+      }
+
+      50% {
+        transform: translateY(-18px) rotate(4deg);
+      }
+    }
+
+    @keyframes arrowBounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(10px);
+      }
+    }
+
+    @keyframes textGradient {
+      from {
+        background-position: 0%;
+      }
+
+      to {
+        background-position: 200%;
+      }
+    }
+
+    @keyframes toolsMove {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes glowMove {
+      from {
+        transform: translate(0,0) scale(0.9);
+      }
+
+      to {
+        transform: translate(130px,90px) scale(1.15);
+      }
+    }
+
+    @media (max-width: 850px) {
+      nav {
+        height: 85px;
+      }
+
+      .menu {
+        position: absolute;
+        top: 85px;
+        right: 0;
+        width: 100%;
+
+        display: none;
+        flex-direction: column;
+        padding: 28px;
+
+        background: rgba(5,6,7,0.97);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .menu.open {
+        display: flex;
+      }
+
+      .menu-button {
+        display: block;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 60px;
+      }
+
+      .profile-container {
+        order: 1;
+      }
+
+      .hero-text {
+        order: 2;
+        text-align: center;
+      }
+
+      .description {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .buttons {
+        justify-content: center;
+      }
+
+      .scroll-down {
+        justify-content: center;
+      }
+
+      .services-grid,
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      section {
+        width: 88%;
+        padding-top: 120px;
+      }
+
+      .hero h1,
+      .section-title,
+      .contact-card h2 {
+        letter-spacing: -3px;
+      }
+
+      .profile-ring {
+        width: 87vw;
+      }
+
+      .floating-icon {
+        width: 58px;
+        height: 58px;
+        padding: 12px;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .about-text {
+        font-size: 20px;
+      }
+
+      .project,
+      .project img {
+        min-height: 470px;
       }
     }
   </style>
@@ -107,79 +783,316 @@
 
 <body>
 
-  <header>
-    <div>
-      <h1>Michael Ehab</h1>
-      <h2>Video Editor</h2>
+  <div class="background-glow"></div>
+  <div class="grid"></div>
 
-      <p>
-        Turning creative ideas into engaging videos using CapCut.
+  <nav>
+    <a href="#home" class="brand">Michael<span>Ehab</span></a>
+
+    <button class="menu-button" onclick="toggleMenu()">☰</button>
+
+    <div class="menu" id="menu">
+      <a href="#home" onclick="toggleMenu()">Home</a>
+      <a href="#about" onclick="toggleMenu()">About</a>
+      <a href="#services" onclick="toggleMenu()">Services</a>
+      <a href="#work" onclick="toggleMenu()">Work</a>
+      <a href="#contact" onclick="toggleMenu()">Contact</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero page-section" id="home" data-background="home">
+
+      <div class="profile-container reveal">
+        <div class="profile-ring">
+          <img src="IMG_8741.jpeg" alt="Michael Ehab">
+        </div>
+
+        <img class="floating-icon capcut"
+             src="https://cdn.simpleicons.org/capcut/FFFFFF"
+             alt="CapCut">
+
+        <img class="floating-icon premiere"
+             src="https://cdn.simpleicons.org/adobepremierepro/9999FF"
+             alt="Adobe Premiere Pro">
+      </div>
+
+      <div class="hero-text reveal">
+        <div class="hello">Hello, I’m</div>
+
+        <h1>Michael<br>Ehab</h1>
+
+        <div class="job-title">
+          Professional <span>Video Editor</span>
+        </div>
+
+        <p class="description">
+          I transform raw ideas and footage into engaging visual stories
+          for social media, advertisements and digital brands.
+        </p>
+
+        <div class="buttons">
+          <a class="button"
+             href="https://drive.google.com/drive/folders/164WzTqoIYL4znQI6TRFLZGpfb663l63f"
+             target="_blank">
+            View Projects
+          </a>
+
+          <a class="button outline"
+             href="https://wa.me/201289948764"
+             target="_blank">
+            Contact Me
+          </a>
+        </div>
+
+        <div class="scroll-down">
+          Scroll to explore
+          <span class="scroll-arrow">↓</span>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="page-section" id="about" data-background="about">
+
+      <div class="reveal">
+        <div class="section-label">Get to know me</div>
+        <h2 class="section-title">About <span>Me</span></h2>
+      </div>
+
+      <p class="about-text reveal">
+        <strong>I’m Michael, a 17-year-old video editor</strong> passionate
+        about transforming simple ideas into creative and engaging content.
+        I create Reels, advertisements and promotional videos using CapCut
+        and Adobe Premiere Pro. Every project is a new opportunity to learn,
+        improve and create something more powerful.
       </p>
 
-      <div class="buttons">
+      <div class="objective reveal">
+        <h3>Career Objective</h3>
+
+        <p>
+          To work with creative brands and content creators, delivering
+          professional video editing that captures attention, communicates
+          ideas clearly and leaves a lasting impression.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="page-section" id="services" data-background="services">
+
+      <div class="reveal">
+        <div class="section-label">What I create</div>
+        <h2 class="section-title">My <span>Services</span></h2>
+      </div>
+
+      <div class="services-grid">
+
+        <article class="service-card reveal">
+          <div class="service-icon">🎬</div>
+          <h3>Video Editing</h3>
+
+          <ul>
+            <li>Social Media Reels</li>
+            <li>Short-form Videos</li>
+            <li>Advertisements</li>
+            <li>Promotional Content</li>
+          </ul>
+        </article>
+
+        <article class="service-card reveal">
+          <div class="service-icon">✨</div>
+          <h3>Visual & Motion</h3>
+
+          <ul>
+            <li>Animated Text</li>
+            <li>Creative Transitions</li>
+            <li>Color Enhancement</li>
+            <li>Sound Design</li>
+          </ul>
+        </article>
+
+      </div>
+
+      <div class="tools-window reveal">
+        <div class="tools-track">
+
+          <div class="tool">
+            <img src="https://cdn.simpleicons.org/capcut/FFFFFF" alt="CapCut">
+            <div>
+              <h3>CapCut</h3>
+              <p>Mobile Video Editing</p>
+            </div>
+          </div>
+
+          <div class="tool">
+            <img src="https://cdn.simpleicons.org/adobepremierepro/9999FF" alt="Premiere">
+            <div>
+              <h3>Premiere Pro</h3>
+              <p>Professional Editing</p>
+            </div>
+          </div>
+
+          <div class="tool">
+            <img src="https://cdn.simpleicons.org/adobeaftereffects/9999FF" alt="After Effects">
+            <div>
+              <h3>After Effects</h3>
+              <p>Motion Graphics</p>
+            </div>
+          </div>
+
+          <div class="tool">
+            <img src="https://cdn.simpleicons.org/capcut/FFFFFF" alt="CapCut">
+            <div>
+              <h3>CapCut</h3>
+              <p>Mobile Video Editing</p>
+            </div>
+          </div>
+
+          <div class="tool">
+            <img src="https://cdn.simpleicons.org/adobepremierepro/9999FF" alt="Premiere">
+            <div>
+              <h3>Premiere Pro</h3>
+              <p>Professional Editing</p>
+            </div>
+          </div>
+
+          <div class="tool">
+            <img src="https://cdn.simpleicons.org/adobeaftereffects/9999FF" alt="After Effects">
+            <div>
+              <h3>After Effects</h3>
+              <p>Motion Graphics</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <section class="page-section" id="work" data-background="work">
+
+      <div class="reveal">
+        <div class="section-label">Selected projects</div>
+        <h2 class="section-title">My <span>Work</span></h2>
+      </div>
+
+      <div class="project-grid">
+
+        <article class="project reveal">
+          <img src="IMG_8487.jpeg" alt="Video editing project">
+
+          <div class="project-content">
+            <span>PROJECT 01</span>
+            <h3>Creative Video Editing</h3>
+            <p>Editing, visual effects and animated information.</p>
+          </div>
+        </article>
+
+        <article class="project reveal">
+          <img src="IMG_8741.jpeg" alt="Michael Ehab">
+
+          <div class="project-content">
+            <span>CREATOR</span>
+            <h3>Behind the Editor</h3>
+            <p>A young creator building his skills one project at a time.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="buttons reveal">
         <a class="button"
            href="https://drive.google.com/drive/folders/164WzTqoIYL4znQI6TRFLZGpfb663l63f"
            target="_blank">
-          View My Work
-        </a>
-
-        <a class="button"
-           href="https://wa.me/201289948764"
-           target="_blank">
-          Contact Me
+          Explore All Projects
         </a>
       </div>
-    </div>
-  </header>
 
-  <section>
-    <h2>About Me</h2>
+    </section>
 
-    <p>
-      I’m a 17-year-old video editor passionate about turning ideas into
-      engaging and creative content. I use CapCut to create professional
-      videos for social media, including Reels, advertisements, and
-      promotional content. I’m always learning new techniques and working
-      to improve with every project.
-    </p>
-  </section>
+    <section class="page-section" id="contact" data-background="contact">
 
-  <section>
-    <h2>My Work</h2>
+      <div class="contact-card reveal">
+        <div class="section-label">Start a project</div>
 
-    <p>
-      Explore a collection of my video editing projects, including social
-      media Reels, advertisements, and promotional videos.
-    </p>
+        <h2>Let’s Create<br><span>Together.</span></h2>
 
-    <div class="buttons">
-      <a class="button"
-         href="https://drive.google.com/drive/folders/164WzTqoIYL4znQI6TRFLZGpfb663l63f"
-         target="_blank">
-        Open Portfolio
-      </a>
-    </div>
-  </section>
+        <p>
+          Have a Reel, advertisement or promotional video in mind?
+          Contact me directly and let’s transform your idea into engaging content.
+        </p>
 
-  <section>
-    <h2>Contact Me</h2>
+        <div class="buttons">
+          <a class="button"
+             href="https://wa.me/201289948764"
+             target="_blank">
+            WhatsApp Me
+          </a>
 
-    <p>
-      Have a project in mind? Contact me directly on WhatsApp.
-    </p>
+          <a class="button outline"
+             href="tel:+201289948764">
+            Call Me
+          </a>
+        </div>
+      </div>
 
-    <div class="buttons">
-      <a class="button"
-         href="https://wa.me/201289948764"
-         target="_blank">
-        WhatsApp: 01289948764
-      </a>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <footer>
     © 2026 Michael Ehab — Video Editor
   </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("menu").classList.toggle("open");
+    }
+
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+        }
+      });
+    }, {
+      threshold: 0.14
+    });
+
+    revealElements.forEach((element) => {
+      revealObserver.observe(element);
+    });
+
+    const sections = document.querySelectorAll(".page-section");
+
+    const backgroundObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        document.body.classList.remove(
+          "about-background",
+          "services-background",
+          "work-background",
+          "contact-background"
+        );
+
+        const background = entry.target.dataset.background;
+
+        if (background !== "home") {
+          document.body.classList.add(background + "-background");
+        }
+      });
+    }, {
+      threshold: 0.45
+    });
+
+    sections.forEach((section) => {
+      backgroundObserver.observe(section);
+    });
+  </script>
 
 </body>
 </html>
